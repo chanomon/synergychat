@@ -67,3 +67,35 @@ Test externally
 Check service endpoints, DNS, TLS certificates, database connectivity, and application health endpoints.
 
 For repeatable deployments, consider putting everything in a declarative tool such as Helm or Kustomize rather than relying on filename order. Also document external dependencies that YAML cannot create automatically, such as DNS records, cloud load balancers, registry credentials, databases, and TLS issuers.
+
+## To view the deployed application
+First check how its Service is exposed:
+
+```
+kubectl get svc -n your-namespace
+```
+Common cases:
+
+- ClusterIP: only reachable inside the cluster. Use port forwarding:
+```
+    kubectl port-forward svc/your-service 8080:80 -n your-namespace
+```
+Then open http://localhost:8080.
+
+NodePort: open:
+```
+http://<node-ip>:<node-port>
+```
+LoadBalancer: get the external address:
+```
+    kubectl get svc your-service -n your-namespace
+```
+
+Open the displayed EXTERNAL-IP.
+
+If using an Ingress:
+```
+kubectl get ingress -n your-namespace
+```
+Then open its hostname in your browser. Ensure DNS points to the ingress address and that an ingress controller is installed.
+
